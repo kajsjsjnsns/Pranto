@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="payment-wrapper">
+        <div class="payment-header">
+            <h2 class="payment-title">💳 পেমেন্ট করুন</h2>
+            <p class="payment-subtitle">নিরাপদ এবং দ্রুত পেমেন্ট প্রক্রিয়া</p>
+        </div>
+        
+        <div class="payment-content">
+            <div class="order-summary-card">
+                <div class="summary-header">
+                    <h3>📦 অর্ডার বিবরণ</h3>
+                    <span class="order-badge">#{{ order.id }}</span>
+                </div>
+                <div class="summary-body">
+                    <div class="summary-item">
+                        <span class="item-label">💎 আইটেম</span>
+                        <span class="item-value">{{ order.topup_item.title }}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="item-label">🎮 Player UID</span>
+                        <span class="item-value">{{ order.player_uid }}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="item-label">📊 পরিমাণ</span>
+                        <span class="item-value">{{ order.quantity }}</span>
+                    </div>
+                    <div class="summary-divider"></div>
+                    <div class="summary-item total">
+                        <span class="item-label">💰 মোট টাকা</span>
+                        <span class="item-value highlight">৳{{ order.total_price }} BDT</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="payment-methods-card">
+                <h3 class="methods-title">💳 পেমেন্ট মেথড নির্বাচন করুন</h3>
+                <div class="method-buttons">
+                    <button class="method-btn nagad" onclick="selectMethod(event, 'nagad')">
+                        <div class="method-icon">📱</div>
+                        <div class="method-name">Nagad</div>
+                    </button>
+                    <button class="method-btn bkash" onclick="selectMethod(event, 'bkash')">
+                        <div class="method-icon">💰</div>
+                        <div class="method-name">Bkash</div>
+                    </button>
+                </div>
+            </div>
+
+            <div id="nagadInstructions" class="payment-instructions-card" style="display:none;">
+                <div class="instructions-header">
+                    <h3>📱 Nagad পেমেন্ট গাইড</h3>
+                </div>
+                <div class="instructions-steps">
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-text">*167# ডায়াল করুন অথবা Nagad অ্যাপ খুলুন</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-text">"Send Money" সিলেক্ট করুন</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-text">
+                            প্রাপক নম্বর: 
+                            <div class="number-box">
+                                <span class="number">01308076084</span>
+                                <button class="copy-btn" onclick="copyText('01308076084')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
+                                    </svg>
+                                    Copy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">4</div>
+                        <div class="step-text">টাকার পরিমাণ: <strong class="amount">৳{{ order.total_price }}</strong> টাকা</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">5</div>
+                        <div class="step-text">পিন দিয়ে কনফার্ম করুন</div>
+                    </div>
+                    <div class="step-item success">
+                        <div class="step-number">✓</div>
+                        <div class="step-text">Transaction সফল! নিচে Transaction ID দিন</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="bkashInstructions" class="payment-instructions-card" style="display:none;">
+                <div class="instructions-header">
+                    <h3>💰 Bkash পেমেন্ট গাইড</h3>
+                </div>
+                <div class="instructions-steps">
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-text">*247# ডায়াল করুন অথবা Bkash অ্যাপ খুলুন</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-text">"Send Money" সিলেক্ট করুন</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-text">
+                            প্রাপক নম্বর: 
+                            <div class="number-box">
+                                <span class="number">01308076084</span>
+                                <button class="copy-btn" onclick="copyText('01308076084')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
+                                    </svg>
+                                    Copy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">4</div>
+                        <div class="step-text">টাকার পরিমাণ: <strong class="amount">৳{{ order.total_price }}</strong> টাকা</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">5</div>
+                        <div class="step-text">পিন দিয়ে কনফার্ম করুন</div>
+                    </div>
+                    <div class="step-item success">
+                        <div class="step-number">✓</div>
+                        <div class="step-text">Transaction সফল! নিচে Transaction ID দিন</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="transactionForm" class="transaction-form-card" style="display:none;">
+                <div class="form-header">
+                    <h3>🔐 Transaction ID যাচাই করুন</h3>
+                </div>
+                <form id="verifyForm">
+                    <input type="hidden" id="paymentMethod" name="payment_method">
+                    <div class="form-group-modern">
+                        <label for="transactionId">Transaction ID</label>
+                        <input type="text" id="transactionId" name="transaction_id" required placeholder="উদাহরণ: ABC123XYZ456">
+                    </div>
+                    <button type="submit" class="btn-verify-modern">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 11l3 3L22 4"></path>
+                            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path>
+                        </svg>
+                        VERIFY & CONFIRM
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let selectedMethod = null;
+
+function selectMethod(evt, method) {
+    selectedMethod = method;
+    
+    document.querySelectorAll('.method-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    evt.target.closest('.method-btn').classList.add('active');
+    
+    document.getElementById('nagadInstructions').style.display = 'none';
+    document.getElementById('bkashInstructions').style.display = 'none';
+    
+    let instructionElement;
+    if (method === 'nagad') {
+        instructionElement = document.getElementById('nagadInstructions');
+        instructionElement.style.display = 'block';
+    } else {
+        instructionElement = document.getElementById('bkashInstructions');
+        instructionElement.style.display = 'block';
+    }
+    
+    document.getElementById('transactionForm').style.display = 'block';
+    document.getElementById('paymentMethod').value = method;
+    
+    instructionElement.classList.remove('flash-attention');
+    void instructionElement.offsetWidth;
+    instructionElement.classList.add('flash-attention');
+    
+    setTimeout(() => {
+        instructionElement.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+        });
+    }, 100);
+}
+
+function copyText(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Copied: ' + text);
+    });
+}
+
+document.getElementById('verifyForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const transactionId = document.getElementById('transactionId').value;
+    const paymentMethod = document.getElementById('paymentMethod').value;
+    
+    if (!transactionId || !paymentMethod) {
+        alert('Please select payment method and enter transaction ID');
+        return;
+    }
+    
+    fetch('/payment/verify/{{ order.id }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            transaction_id: transactionId,
+            payment_method: paymentMethod
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert('পেমেন্ট সফল হয়েছে! আপনার অর্ডার প্রসেস করা হবে।');
+            window.location.href = '/my-orders';
+        } else {
+            alert(data.message || 'পেমেন্ট ভেরিফাই ব্যর্থ হয়েছে');
+        }
+    })
+    .catch(err => {
+        alert('Error verifying payment. Please try again.');
+    });
+});
+</script>
+{% endblock %}

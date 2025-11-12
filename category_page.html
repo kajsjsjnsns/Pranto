@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="page-title">{{ category.name }}</h2>
+    <p class="category-description">{{ category.description }}</p>
+    
+    <div class="packages-container">
+        {% for item in items %}
+        <div class="package-card" onclick="openOrderModal({{ item.id }}, '{{ item.title }}', {{ item.price_bdt }})">
+            <div class="package-ribbon">
+                <span class="ribbon-text">TOP</span>
+            </div>
+            <div class="package-content">
+                <div class="package-icon">💎</div>
+                <h4 class="package-amount">{{ item.diamond_amount }}</h4>
+                <p class="package-title">{{ item.title }}</p>
+                <div class="package-price">
+                    <span class="price-amount">৳{{ item.price_bdt }}</span>
+                    <span class="price-currency">BDT</span>
+                </div>
+                <button class="package-buy-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    Buy Now
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="orderModal" class="modal">
+    <div class="modern-modal-content">
+        <button class="modern-close" onclick="closeOrderModal()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+        
+        <div class="modal-header">
+            <div class="modal-icon">🛒</div>
+            <h2 class="modal-title">Place Your Order</h2>
+            <p class="modal-subtitle">Fill in the details below</p>
+        </div>
+        
+        <form id="orderForm" class="modern-order-form">
+            <div class="order-info-card">
+                <div class="info-row">
+                    <span class="info-label">💎 Item</span>
+                    <span id="orderItemName" class="info-value"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">💰 Price</span>
+                    <span id="orderItemPrice" class="info-value"></span>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <div class="input-group">
+                    <label for="playerUid">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        Player UID
+                    </label>
+                    <input type="text" id="playerUid" name="playerUid" required placeholder="Enter your Free Fire UID">
+                </div>
+                
+                <div class="input-group">
+                    <label for="quantity">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <polyline points="19 12 12 19 5 12"></polyline>
+                        </svg>
+                        Quantity
+                    </label>
+                    <input type="number" id="quantity" name="quantity" value="1" min="1" max="10">
+                </div>
+            </div>
+            
+            <div class="total-section">
+                <div class="total-row">
+                    <span class="total-label">Total Amount</span>
+                    <span id="totalPrice" class="total-amount"></span>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-confirm-order">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 11l3 3L22 4"></path>
+                    <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path>
+                </svg>
+                Confirm & Proceed to Payment
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentItemId = null;
+let currentItemPrice = 0;
+
+function openOrderModal(itemId, itemName, itemPrice) {
+    {% if not session.get('user_id') %}
+        alert('Please login first to place an order');
+        window.location.href = '/auth/login';
+        return;
+    {% endif %}
+    
+    currentItemId = itemId;
+    currentItemPrice = itemPrice;
+    
+    document.getElementById('orderItemName').textContent = itemName;
+    document.getElementById('orderItemPrice').textContent = `৳${itemPrice} BDT`;
+    document.getElementById('totalPrice').textContent = `৳${itemPrice} BDT`;
+    document.getElementById('quantity').value = 1;
+    
+    document.getElementById('orderModal').style.display = 'block';
+}
+
+function closeOrderModal() {
+    document.getElementById('orderModal').style.display = 'none';
+}
+
+document.getElementById('quantity').addEventListener('input', function() {
+    const quantity = parseInt(this.value) || 1;
+    const total = currentItemPrice * quantity;
+    document.getElementById('totalPrice').textContent = `৳${total} BDT`;
+});
+
+document.getElementById('orderForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const playerUid = document.getElementById('playerUid').value;
+    const quantity = parseInt(document.getElementById('quantity').value);
+    
+    fetch('/order', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            item_id: currentItemId,
+            player_uid: playerUid,
+            quantity: quantity
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            closeOrderModal();
+            document.getElementById('orderForm').reset();
+            window.location.href = data.redirect_url;
+        } else {
+            alert(data.message || 'Failed to place order');
+        }
+    })
+    .catch(err => {
+        alert('Error placing order. Please try again.');
+    });
+});
+
+window.onclick = function(event) {
+    const orderModal = document.getElementById('orderModal');
+    if (event.target == orderModal) {
+        closeOrderModal();
+    }
+}
+</script>
+{% endblock %}

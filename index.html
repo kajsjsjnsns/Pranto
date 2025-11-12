@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="section-title">Free Fire Topup</h2>
+    
+    <div class="products-grid">
+        {% for category in categories %}
+        {% if category.name == 'Free Fire UID Topup' %}
+            {% set route = 'orders.uid_topup' %}
+        {% elif category.name == 'Weekly Monthly Offer' %}
+            {% set route = 'orders.weekly_monthly' %}
+        {% elif category.name == 'Level Up Pass' %}
+            {% set route = 'orders.level_up_pass' %}
+        {% elif category.name == 'Weekly Lite' %}
+            {% set route = 'orders.weekly_lite' %}
+        {% elif category.name == 'Evo Access/E-Badge' %}
+            {% set route = 'orders.evo_access' %}
+        {% elif category.name == 'Free Fire Auto Like' %}
+            {% set route = 'orders.auto_like' %}
+        {% endif %}
+        <div class="product-card" onclick="window.location.href='{{ url_for(route) }}'">
+            <img src="{{ category.image_url }}" alt="{{ category.name }}">
+            <p>{{ category.name }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="itemsModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2 id="modalTitle"></h2>
+        <div id="itemsList" class="items-grid"></div>
+    </div>
+</div>
+
+<div id="orderModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeOrderModal()">&times;</span>
+        <h2>Place Order</h2>
+        <form id="orderForm">
+            <div class="form-group">
+                <label>Item:</label>
+                <p id="orderItemName" class="item-name"></p>
+            </div>
+            <div class="form-group">
+                <label>Price:</label>
+                <p id="orderItemPrice" class="item-price"></p>
+            </div>
+            <div class="form-group">
+                <label for="playerUid">Free Fire Player UID:</label>
+                <input type="text" id="playerUid" name="playerUid" required placeholder="Enter your UID">
+            </div>
+            <div class="form-group">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" value="1" min="1" max="10">
+            </div>
+            <div class="form-group">
+                <label>Total:</label>
+                <p id="totalPrice" class="total-price"></p>
+            </div>
+            <button type="submit" class="btn-submit">Confirm Order</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentItemId = null;
+let currentItemPrice = 0;
+
+function showCategoryItems(categoryId, categoryName) {
+    fetch(`/category/${categoryId}`)
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('modalTitle').textContent = categoryName;
+            const itemsList = document.getElementById('itemsList');
+            itemsList.innerHTML = '';
+            
+            data.items.forEach(item => {
+                const itemCard = document.createElement('div');
+                itemCard.className = 'item-card';
+                itemCard.innerHTML = `
+                    <div class="item-details">
+                        <h4>${item.diamond_amount}</h4>
+                        <p class="item-title">${item.title}</p>
+                        <p class="item-price">৳${item.price_bdt} BDT</p>
+                    </div>
+                    <button class="btn-buy" onclick="openOrderModal(${item.id}, '${item.title}', ${item.price_bdt})">
+                        Buy Now
+                    </button>
+                `;
+                itemsList.appendChild(itemCard);
+            });
+            
+            document.getElementById('itemsModal').style.display = 'block';
+        });
+}
+
+function closeModal() {
+    document.getElementById('itemsModal').style.display = 'none';
+}
+
+function openOrderModal(itemId, itemName, itemPrice) {
+    {% if not session.get('user_id') %}
+        alert('Please login first to place an order');
+        window.location.href = '/auth/login';
+        return;
+    {% endif %}
+    
+    currentItemId = itemId;
+    currentItemPrice = itemPrice;
+    
+    document.getElementById('orderItemName').textContent = itemName;
+    document.getElementById('orderItemPrice').textContent = `৳${itemPrice} BDT`;
+    document.getElementById('totalPrice').textContent = `৳${itemPrice} BDT`;
+    document.getElementById('quantity').value = 1;
+    
+    closeModal();
+    document.getElementById('orderModal').style.display = 'block';
+}
+
+function closeOrderModal() {
+    document.getElementById('orderModal').style.display = 'none';
+}
+
+document.getElementById('quantity').addEventListener('input', function() {
+    const quantity = parseInt(this.value) || 1;
+    const total = currentItemPrice * quantity;
+    document.getElementById('totalPrice').textContent = `৳${total} BDT`;
+});
+
+document.getElementById('orderForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const playerUid = document.getElementById('playerUid').value;
+    const quantity = parseInt(document.getElementById('quantity').value);
+    
+    fetch('/order', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            item_id: currentItemId,
+            player_uid: playerUid,
+            quantity: quantity
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            closeOrderModal();
+            document.getElementById('orderForm').reset();
+            window.location.href = data.redirect_url;
+        } else {
+            alert(data.message || 'Failed to place order');
+        }
+    })
+    .catch(err => {
+        alert('Error placing order. Please try again.');
+    });
+});
+
+window.onclick = function(event) {
+    const itemsModal = document.getElementById('itemsModal');
+    const orderModal = document.getElementById('orderModal');
+    if (event.target == itemsModal) {
+        closeModal();
+    }
+    if (event.target == orderModal) {
+        closeOrderModal();
+    }
+}
+</script>
+{% endblock %}
