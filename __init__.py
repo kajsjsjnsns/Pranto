@@ -1,5 +1,5 @@
 from flask import Blueprint
 
-auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
+orders_bp = Blueprint('orders', __name__)
 
-from app.auth import routes
+from app.orders import routes
