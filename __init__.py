@@ -1,5 +1,5 @@
 from flask import Blueprint
 
-orders_bp = Blueprint('orders', __name__)
+webhook_bp = Blueprint('webhook', __name__, url_prefix='/webhook')
 
-from app.orders import routes
+from app.webhook import routes
