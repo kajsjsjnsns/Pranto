@@ -1,0 +1,52 @@
+{
+  "uid_topup": [
+    {"title": "25 Diamond", "price_bdt": 20, "diamond_amount": "25"},
+    {"title": "50 Diamond", "price_bdt": 34, "diamond_amount": "50"},
+    {"title": "115 Diamond", "price_bdt": 74, "diamond_amount": "115"},
+    {"title": "240 Diamond", "price_bdt": 149, "diamond_amount": "240"},
+    {"title": "355 Diamond", "price_bdt": 229, "diamond_amount": "355"},
+    {"title": "480 Diamond", "price_bdt": 306, "diamond_amount": "480"},
+    {"title": "610 Diamond", "price_bdt": 395, "diamond_amount": "610"},
+    {"title": "850 Diamond", "price_bdt": 540, "diamond_amount": "850"},
+    {"title": "1240 Diamond", "price_bdt": 805, "diamond_amount": "1240"},
+    {"title": "1850 Diamond", "price_bdt": 1205, "diamond_amount": "1850"},
+    {"title": "2530 Diamond", "price_bdt": 1636, "diamond_amount": "2530"},
+    {"title": "5060 Diamond", "price_bdt": 3280, "diamond_amount": "5060"},
+    {"title": "10120 Diamond", "price_bdt": 6610, "diamond_amount": "10120"},
+    {"title": "Weekly", "price_bdt": 145, "diamond_amount": "Weekly Pass"},
+    {"title": "Monthly", "price_bdt": 750, "diamond_amount": "Monthly Pass"}
+  ],
+  "weekly_monthly": [
+    {"title": "Weekly", "price_bdt": 154, "diamond_amount": "1x Weekly"},
+    {"title": "2X Weekly", "price_bdt": 308, "diamond_amount": "2x Weekly"},
+    {"title": "3X Weekly", "price_bdt": 406, "diamond_amount": "3x Weekly"},
+    {"title": "Monthly", "price_bdt": 770, "diamond_amount": "1x Monthly"},
+    {"title": "2X Monthly", "price_bdt": 1440, "diamond_amount": "2x Monthly"},
+    {"title": "1X Weekly+1X Monthly", "price_bdt": 935, "diamond_amount": "1x Weekly + 1x Monthly"}
+  ],
+  "level_up": [
+    {"title": "Level Up Package - Level 6", "price_bdt": 40, "diamond_amount": "Level 6"},
+    {"title": "Level Up Package - Level 10", "price_bdt": 70, "diamond_amount": "Level 10"},
+    {"title": "Level Up Package - Level 15", "price_bdt": 70, "diamond_amount": "Level 15"},
+    {"title": "Level Up Package - Level 20", "price_bdt": 70, "diamond_amount": "Level 20"},
+    {"title": "Level Up Package - Level 25", "price_bdt": 70, "diamond_amount": "Level 25"},
+    {"title": "Level Up Package - Level 30", "price_bdt": 100, "diamond_amount": "Level 30"},
+    {"title": "Full Level Up (1270 Diamond)", "price_bdt": 400, "diamond_amount": "1270 Diamond"}
+  ],
+  "weekly_lite": [
+    {"title": "1x Weekly Lite", "price_bdt": 42, "diamond_amount": "1x"},
+    {"title": "2X Weekly Lite", "price_bdt": 84, "diamond_amount": "2x"},
+    {"title": "3X Weekly Lite", "price_bdt": 125, "diamond_amount": "3x"},
+    {"title": "5X Weekly Lite", "price_bdt": 210, "diamond_amount": "5x"}
+  ],
+  "evo_access": [
+    {"title": "3 Days Evo Access", "price_bdt": 75, "diamond_amount": "3 Days"},
+    {"title": "7 Days Evo Access", "price_bdt": 110, "diamond_amount": "7 Days"},
+    {"title": "30 Days Evo Access", "price_bdt": 310, "diamond_amount": "30 Days"}
+  ],
+  "auto_like": [
+    {"title": "Daily 100 Auto Likes", "price_bdt": 50, "diamond_amount": "100 Likes/Day"},
+    {"title": "Weekly 700 Auto Likes", "price_bdt": 300, "diamond_amount": "700 Likes/Week"},
+    {"title": "Monthly 3000 Auto Likes", "price_bdt": 1000, "diamond_amount": "3000 Likes/Month"}
+  ]
+}
